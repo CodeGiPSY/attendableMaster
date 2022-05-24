@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Attendable</string>
+    <string name="app_package">com.extremex.attendable</string>
+    <string name="app_version">0.1.10</string>
+
+
+
+    //intro
+    <string name="intro_details">Manege teacher and student information\n
+        course allocation System\n
+        take live Attendance
+    </string>
+    <string name="intro_contacts">Manege Teacher and Student information</string>
+    <string name="intro_blood_donation">Course Allocation System</string>
+    <string name="intro_find_location">Take live Attendance</string>
+    <string name="password">Password</string>
+    <string name="total_no_of_teacher_s_logins">Total no of Teacher\'s logins:</string>
+    <string name="total_no_of_student_logins">Total no of Student logins:</string>
+    <string name="logout_string">Logout</string>
+    <string name="update_students_string">Update Students</string>
+    <string name="update_course_string">Update Course</string>
+    <string name="update_teachers_string">Update Teachers</string>
+    <string name="_5">5</string>
+    <string name="number_of_courses">Number of Courses:</string>
+    <string name="sign_in_string">SIGN UP</string>
+    <string name="username_string">Username</string>
+    <string name="sign_out_string">Sign Out</string>
+    <string name="login_string">Login</string>
+    <string name="sign_up_string">Sign up</string>
+    <string name="mark_attendance_string">Mark Attendance</string>
+    <string name="up_coming_events_string">Up Coming Events</string>
+    <string name="no_events_string">hey there, you have no upcoming events for now.</string>
+    <string name="name_String">Name:</string>
+    <string name="app_icon_string">app icon</string>
+    <string name="id_string">ID Number</string>
+    <string name="email_string">Email:</string>
+    <string name="create_password_string">Create Password:</string>
+    <string name="account_type_string">Account Type:</string>
+    <string name="course_string">Course:</string>
+    <string name="id_number_string">ID Number:</string>
+    <string name="student_string">Student</string>
+    <string name="back_button_string">Back Button</string>
+    <string name="first_name_string">First Name</string>
+    <string name="last_name_string">Last Name</string>
+    <string name="email_id_string">Email</string>
+    <string name="new_password_string">New Password</string>
+    <string name="confirm_password_string">Confirm Password</string>
+    <string name="previous_string">previous</string>
+    <string name="next_string">next</string>
+    <string name="bca_string">BCA</string>
+
+
+</resources>

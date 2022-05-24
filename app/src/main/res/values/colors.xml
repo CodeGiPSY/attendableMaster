@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorBlack">#000</color>
+    <color name="colorWhite">#fff</color>
+    <color name="colorRed">#ec1f24</color>
+    <color name="colorPink">#d91f63</color>
+    <color name="colorGreen">#00911d</color>
+    <color name="colorLightGray">#d7d7d7</color>
+    <color name="colorGray">#a1a1a1</color>
+    <color name="colorDeepGray">#747474</color>
+    <color name="colorBlue">#2b71fd</color>
+    <color name="colorLayoutBG">#FAE2E1</color>
+    <color name="colorLayoutDeepBG">#EECCCA</color>
+    <color name="blueLink">#257df1</color>
+    <color name="colorPrimary">#1B536D</color>
+    <color name="colorPrimaryLite">#40809D</color>
+    <color name="colorPrimaryLite2">#2D40809D</color>
+    <color name="colorPrimaryDark">#164257</color>
+    <color name="colorAccent">#1B536D</color>
+    <color name="colorSuccess">#3AA33E</color>
+    <color name="colorInfo">#2089DD</color>
+    <color name="colorWarning">#BB9525</color>
+    <color name="colorError">#EB3829</color>
+    <color name="Grey">#59A5A4A4</color>
+    <color name="tomato">#FFFF6347</color>
+</resources>
