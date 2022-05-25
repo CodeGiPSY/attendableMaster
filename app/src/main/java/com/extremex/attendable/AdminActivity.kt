@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+
+private lateinit var fireBaseAuth: FirebaseAuth
 
 class AdminActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,15 +16,10 @@ class AdminActivity : AppCompatActivity() {
         val signOutButton = findViewById<Button>(R.id.signoutBtn)
         val loginScreen =  Intent(this,LoginActivity::class.java)
 
-        val validate = getSharedPreferences("validation", MODE_PRIVATE)
-        val save = validate.edit()
-
+        fireBaseAuth = FirebaseAuth.getInstance()
 
         signOutButton.setOnClickListener {
-            save.remove("USERNAME")
-            save.remove("PASSWORD")
-            save.apply()
-
+            fireBaseAuth.signOut()
             startActivity(loginScreen);
             finish()
         }

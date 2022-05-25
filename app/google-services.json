@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "556602406093",
+    "project_id": "signup-attendable",
+    "storage_bucket": "signup-attendable.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556602406093:android:f961c83a1dd845c6a62584",
+        "android_client_info": {
+          "package_name": "com.extremex.attendable"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "556602406093-cllkiio42pasio9fu32lqvbfqgfh40d5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3-vNTGkj_YXF0Y5S3bFZIzGQWg5m2P_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "556602406093-cllkiio42pasio9fu32lqvbfqgfh40d5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

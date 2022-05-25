@@ -1,13 +1,22 @@
 package com.extremex.attendable
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.text.TextUtils
+import android.util.Patterns
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import android.widget.Button as Button
 
 class LoginActivity : AppCompatActivity() {
+
+    // fireBase Auth
+    private lateinit var fireBaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -21,30 +30,60 @@ class LoginActivity : AppCompatActivity() {
         val userName: EditText = this@LoginActivity.findViewById(R.id.username)
         val userPassWord: EditText = this@LoginActivity.findViewById(R.id.password)
 
-        val pref = getSharedPreferences("creds-for-auth", MODE_PRIVATE)
-        val savedUname = pref.getString("EMAIL_ID", "")
-        val savedPass = pref.getString("PASSWORD", "")
-
 
         loginButton.setOnClickListener {
-            if (userName.text.toString() == savedUname && !userName.text.toString().isNullOrBlank()) {
-                if (userPassWord.text.toString() == savedPass && !userPassWord.text.toString().isNullOrBlank()){
-                    val validate = getSharedPreferences("validation", MODE_PRIVATE)
-                    val editor = validate.edit()
+            // validation
 
-                    editor.putString("USERNAME", userName.text.toString())
-                    editor.putString("PASSWORD", userPassWord.text.toString())
-                    editor.apply()
-
-                    startActivity(AdminActivityScreen)
-
-                } else {
-                    Toast.makeText(this@LoginActivity, "Incorrect Password", Toast.LENGTH_SHORT).show()
-                }
+            if (userName.text.toString().isBlank() && userPassWord.text.toString().isBlank()) {
+                Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this@LoginActivity, "Incorrect Username", Toast.LENGTH_SHORT).show()
+                VerifyAuth(userName.text.toString(), userPassWord.text.toString())
             }
         }
         signUp.setOnClickListener { startActivity(SignUpActivityScreen) }
+    }
+
+    private fun VerifyAuth(email: String, password: String) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            Toast.makeText(this,"Invalid Email Address",Toast.LENGTH_SHORT).show()
+        } else if (TextUtils.isEmpty(password)){
+            Toast.makeText(this,"Password is Incorrect",Toast.LENGTH_SHORT).show()
+        } else {
+            fireBaseLogin(email, password)
+        }
+
+
+    }
+
+    private fun fireBaseLogin(email: String, password: String) {
+        val progress: ProgressDialog = ProgressDialog(this)
+        progress.setTitle("Please Wait")
+        progress.setMessage("Logging in...")
+        progress.setCancelable(false)
+        progress.show()
+        fireBaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                progress.dismiss()
+                val firebaseUser = fireBaseAuth.currentUser
+                val userEmail = firebaseUser!!.email
+                Toast.makeText(this,"Logged in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, AdminActivity::class.java))
+            }
+            .addOnFailureListener {
+                progress.dismiss()
+                Toast.makeText(this,"User not found, please Sign Up ",Toast.LENGTH_SHORT).show()
+            }
+
+    }
+
+    override fun onStart(){
+        //if user exist
+        fireBaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = fireBaseAuth.currentUser
+        if (firebaseUser != null) {
+            startActivity(Intent(this, AdminActivity::class.java))
+            finish()
+        }
+        super.onStart()
     }
 }

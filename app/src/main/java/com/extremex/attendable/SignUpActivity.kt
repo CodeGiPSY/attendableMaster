@@ -1,13 +1,21 @@
 package com.extremex.attendable
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.extremex.kotex_libs.WebHooks
+import com.google.firebase.auth.FirebaseAuth
 
 class SignUpActivity : AppCompatActivity() {
+
+    // firebase Auth
+    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -31,15 +39,8 @@ class SignUpActivity : AppCompatActivity() {
         val numberID :EditText = this.findViewById(R.id.IDNumber)
         val signUpButton :Button = this.findViewById(R.id.SignUpButton)
 
-        // storage access for shared storage in /android/data/com.extremex.attendable/SharedPreferences/
-        //
-        val pref = getSharedPreferences("creds-for-auth", MODE_PRIVATE)
-        val editor = pref.edit()
-        //
-        //
-
         var courseCodes = resources.getStringArray(R.array.course_code)
-        val roleName = arrayListOf<String>("teacher","student","admin")
+        val roleName = arrayListOf("teacher","student","admin")
 
         var rolePointer = 2
         var coursePointer = 1
@@ -47,7 +48,7 @@ class SignUpActivity : AppCompatActivity() {
         course.text = courseCodes[coursePointer]
 
         privRole.setOnClickListener {
-            rolePointer -= 14
+            rolePointer -= 1
             if (rolePointer == 0) {
                 rolePointer = 0
                 privRole.alpha = 0.3f
@@ -67,7 +68,8 @@ class SignUpActivity : AppCompatActivity() {
 
         nextRole.setOnClickListener {
             rolePointer += 1
-            if (rolePointer == roleName.size-1) {
+            if (rolePointer == roleName.size) {
+                rolePointer = roleName.size -1
                 nextRole.alpha = 0.3f
                 nextRole.isClickable = false
                 role.text = roleName[rolePointer]
@@ -117,36 +119,54 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         signUpButton.setOnClickListener{
-            if (!firstName.text.isNullOrBlank() && !lastName.text.isNullOrBlank() && !email.text.isNullOrBlank() &&
-                !password.text.isNullOrBlank() && !verifyPassword.text.isNullOrBlank() && !numberID.text.isNullOrBlank()){
 
-                if (verifyPassword.text.toString() == password.text.toString()){
-
-                    editor.putString("FIRST_NAME", firstName.text.toString())
-                    editor.putString("LAST_NAME",lastName.text.toString())
-                    editor.putString("EMAIL_ID", email.text.toString())
-                    editor.putString("PASSWORD", password.text.toString())
-                    editor.putString("ACCT_TYPE", role.text.toString())
-                    editor.putString("COURSE_CODE", course.text.toString())
-                    editor.putString("ID_NUMBER", numberID.text.toString())
-                    editor.apply()
-
-                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
-
-                    onBackPressed()
-
-                } else {
-                    Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, "Fill in the empty Fields", Toast.LENGTH_SHORT).show()
+            if (email.text.toString().isBlank() && password.text.toString().isBlank()) {
+                Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show()
             }
+            if (password.text.toString() == verifyPassword.text.toString()){
+                VerifyAuth(email.text.toString(), password.text.toString())
+            } else {
+                Toast.makeText(this, "Password does not match!", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         backButton.setOnClickListener {
             finish()
             startActivity(LoginActivityScreen)
         }
+    }
+    private fun VerifyAuth(email: String, password: String) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            Toast.makeText(this,"Invalid Email Address",Toast.LENGTH_SHORT).show()
+        } else if (TextUtils.isEmpty(password)){
+            Toast.makeText(this,"Password is Incorrect",Toast.LENGTH_SHORT).show()
+        } else {
+            fireBaseLogin(email, password)
+        }
+
+
+    }
+
+    private fun fireBaseLogin(email: String, password: String) {
+        firebaseAuth = FirebaseAuth.getInstance()
+        val showProgress: ProgressDialog = ProgressDialog(this)
+        showProgress.setTitle("Please wait")
+        showProgress.setMessage("Signing in...")
+        showProgress.setCancelable(false)
+        showProgress.show()
+        firebaseAuth.createUserWithEmailAndPassword(email,password)
+            .addOnSuccessListener {
+                showProgress.dismiss()
+                val firebaseUser = firebaseAuth.currentUser
+                val userEmail = firebaseUser!!.email
+                Toast.makeText(this,"Signed in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
+            .addOnFailureListener {
+                showProgress.dismiss()
+                Toast.makeText(this,"Failed to Sign in.",Toast.LENGTH_SHORT).show()
+            }
     }
 
     override fun onBackPressed() {
