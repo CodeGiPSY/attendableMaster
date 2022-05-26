@@ -1,5 +1,6 @@
 package com.extremex.attendable
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +17,8 @@ class LoginActivity : AppCompatActivity() {
 
     // fireBase Auth
     private lateinit var fireBaseAuth: FirebaseAuth
+    //
+    private val roleName = arrayListOf("teacher","student","admin")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 val firebaseUser = fireBaseAuth.currentUser
                 val userEmail = firebaseUser!!.email
                 Toast.makeText(this,"Logged in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, AdminActivity::class.java))
+                startActivity(Intent(this, StudentActivity::class.java))
             }
             .addOnFailureListener {
                 progress.dismiss()
@@ -81,8 +84,25 @@ class LoginActivity : AppCompatActivity() {
         fireBaseAuth = FirebaseAuth.getInstance()
         val firebaseUser = fireBaseAuth.currentUser
         if (firebaseUser != null) {
-            startActivity(Intent(this, AdminActivity::class.java))
-            finish()
+            val ac = Intent(this, LoginActivity::class.java)
+            when(intent.getStringExtra("ROLE")){
+                roleName[0] -> {
+                    startActivity(Intent(this, TeachersActivity::class.java))
+                    finish()
+                }
+                roleName[1] -> {
+                    startActivity(Intent(this, StudentActivity::class.java))
+                    finish()
+                }
+                roleName[2] -> {
+                    startActivity(Intent(this, AdminActivity::class.java))
+                    finish()
+                }
+                "" -> {
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                }
+            }
         }
         super.onStart()
     }

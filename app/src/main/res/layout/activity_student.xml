@@ -3,118 +3,165 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLayoutDeepBG"
     android:orientation="vertical"
     tools:context=".StudentActivity">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:background="@drawable/bg_border_stroke"
+        android:layout_margin="10dp"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/up_coming_events_string"
-            android:gravity="center_vertical|start"
-            android:paddingTop="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="0dp"
-            android:paddingBottom="0dp"
-            android:layout_marginStart="20dp"
-            android:textStyle="bold"
-            android:textSize="28sp"/>
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_notice_board"
-            android:text="@string/no_events_string"
-            android:gravity="center"
+            android:background="@drawable/curved_cons"
+            android:layout_margin="10dp"
             android:elevation="5dp"
-            android:fontFamily="cursive"
-            android:layout_weight="1"
-            android:autoSizeTextType="uniform"
-            android:padding="20dp"
-            android:layout_margin="10dp">
+            android:orientation="vertical">
 
-        </androidx.appcompat.widget.AppCompatTextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hello"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="5dp"
+                android:textStyle="bold"
+                android:autoSizeTextType="uniform" />
+            <TextView
+                android:id="@+id/User"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|center_horizontal"
+                android:paddingStart="45dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="20dp"
+                android:text="@string/user"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
 
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/up_coming_events_string"
+                android:gravity="center_vertical|start"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="0dp"
+                android:paddingBottom="0dp"
+                android:layout_marginStart="20dp"
+                android:textStyle="bold"
+                android:textSize="24sp"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/EventBoard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_notice_board"
+                android:text="@string/no_events_string"
+                android:gravity="center"
+                android:elevation="5dp"
+                android:fontFamily="cursive"
+                android:layout_weight="1"
+                android:autoSizeTextType="uniform"
+                android:padding="20dp"
+                android:layout_margin="10dp">
+
+            </androidx.appcompat.widget.AppCompatTextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:gravity="top">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/MarkAttendanceButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:alpha="0.9"
+                    android:textAllCaps="false"
+                    android:background="@drawable/bg_button_1"
+                    android:text="@string/mark_attendance_string"
+                    android:textColor="#263238" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/ViewAttendance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:alpha="0.9"
+                    android:textAllCaps="false"
+                    android:background="@drawable/bg_button_1"
+                    android:text="View Attendance"
+                    android:textColor="#263238" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/a1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:alpha="0.9"
+                    android:background="@drawable/bg_button_1"
+                    android:text="1"
+                    android:visibility="gone"
+                    android:textColor="#263238" />
+
+            </LinearLayout>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="top">
+            android:layout_weight="2.5"
+            android:gravity="bottom"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/CheckIn"
+                android:id="@+id/signoutBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:alpha="0.9"
-                android:background="@drawable/bg_button_1"
-                android:text="@string/mark_attendance_string"
-                android:textColor="#263238" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/a2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:alpha="0.9"
-                android:background="@drawable/bg_button_1"
-                android:text="2"
-                android:textColor="#263238" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/a1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:alpha="0.9"
-                android:background="@drawable/bg_button_1"
-                android:text="1"
+                android:background="@drawable/bg_button"
+                android:text="@string/sign_out_string"
                 android:textColor="#263238" />
 
         </LinearLayout>
 
-
     </androidx.appcompat.widget.LinearLayoutCompat>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2.5"
-        android:gravity="bottom"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/signoutBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="20dp"
-            android:alpha="0.9"
-            android:background="@drawable/bg_button"
-            android:text="@string/sign_out_string"
-            android:textColor="#263238" />
-
-    </LinearLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

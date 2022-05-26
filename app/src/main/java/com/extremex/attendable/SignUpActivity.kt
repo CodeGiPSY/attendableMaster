@@ -2,19 +2,19 @@ package com.extremex.attendable
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.extremex.kotex_libs.WebHooks
 import com.google.firebase.auth.FirebaseAuth
 
 class SignUpActivity : AppCompatActivity() {
 
     // firebase Auth
     private lateinit var firebaseAuth: FirebaseAuth
+    //private lateinit var firebaseDatabase: FirebaseDatabase
+    //private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,7 +124,15 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show()
             }
             if (password.text.toString() == verifyPassword.text.toString()){
-                VerifyAuth(email.text.toString(), password.text.toString())
+                VerifyAuth(
+                    email.text.toString(),
+                    password.text.toString(),
+                    firstName.text.toString(),
+                    lastName.text.toString(),
+                    role.text.toString(),
+                    course.text.toString(),
+                    numberID.text.toString().toInt()
+                )
             } else {
                 Toast.makeText(this, "Password does not match!", Toast.LENGTH_SHORT).show()
             }
@@ -136,19 +144,28 @@ class SignUpActivity : AppCompatActivity() {
             startActivity(LoginActivityScreen)
         }
     }
-    private fun VerifyAuth(email: String, password: String) {
+    private fun VerifyAuth(email: String, password: String,
+                           firstName: String, lastName: String ,
+                           role: String, course: String, id: Int) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             Toast.makeText(this,"Invalid Email Address",Toast.LENGTH_SHORT).show()
-        } else if (TextUtils.isEmpty(password)){
+        } else if (TextUtils.isEmpty(password)&&TextUtils.isEmpty(firstName)&&TextUtils.isEmpty(lastName)&&TextUtils.isEmpty(id.toString()) ){
             Toast.makeText(this,"Password is Incorrect",Toast.LENGTH_SHORT).show()
         } else {
-            fireBaseLogin(email, password)
+            fireBaseLogin(email, password, role)
+            //firebaseDatabase = FirebaseDatabase.getInstance()
+            //databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+
+           // val userData = DataHelper(firstName,lastName,email,role,course,id)
+           // databaseReference.setValue(firstName)
+           //databaseReference.child(id.toString()).setValue(userData)
+
         }
 
 
     }
 
-    private fun fireBaseLogin(email: String, password: String) {
+    private fun fireBaseLogin(email: String, password: String, role: String) {
         firebaseAuth = FirebaseAuth.getInstance()
         val showProgress: ProgressDialog = ProgressDialog(this)
         showProgress.setTitle("Please wait")
@@ -161,7 +178,10 @@ class SignUpActivity : AppCompatActivity() {
                 val firebaseUser = firebaseAuth.currentUser
                 val userEmail = firebaseUser!!.email
                 Toast.makeText(this,"Signed in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
+                val lg = Intent(this, LoginActivity::class.java)
+                lg.putExtra("ROLE",role)
+                startActivity(lg)
+
             }
             .addOnFailureListener {
                 showProgress.dismiss()

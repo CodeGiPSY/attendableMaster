@@ -6,9 +6,11 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
-private lateinit var fireBaseAuth: FirebaseAuth
 
 class AdminActivity : AppCompatActivity() {
+
+    private lateinit var fireBaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)

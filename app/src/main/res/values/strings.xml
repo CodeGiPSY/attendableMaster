@@ -29,7 +29,8 @@
     <string name="sign_up_string">Sign up</string>
     <string name="mark_attendance_string">Mark Attendance</string>
     <string name="up_coming_events_string">Up Coming Events</string>
-    <string name="no_events_string">hey there, you have no upcoming events for now.</string>
+    <string name="no_events_string">you have no upcoming events for now.</string>
+    <string name="no_events_1_string">you have updated no events for now.</string>
     <string name="name_String">Name:</string>
     <string name="app_icon_string">app icon</string>
     <string name="id_string">ID Number</string>
@@ -48,6 +49,11 @@
     <string name="previous_string">previous</string>
     <string name="next_string">next</string>
     <string name="bca_string">BCA</string>
+    <string name="hello">Hello,</string>
+    <string name="user">user</string>
+    <string name="close_string">close</string>
+    <string name="xfc38delr_random_string">Xfc38Delr</string>
+    <string name="scan_my_code_string">Scan my code</string>
 
 
 </resources>
