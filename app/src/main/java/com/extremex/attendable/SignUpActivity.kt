@@ -131,10 +131,25 @@ class SignUpActivity : AppCompatActivity() {
 
         signUpButton.setOnClickListener{
 
-            if (email.text.toString().isBlank() && password.text.toString().isBlank()) {
-                Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show()
-            }
-            if (password.text.toString() == verifyPassword.text.toString()){
+            if (firstName.text.toString().isBlank()) {
+                firstName.error = "Field cannot be empty!"
+                if (lastName.text.toString().isBlank()) {
+                    lastName.error = "Field cannot be empty!"
+                    if (email.text.toString().isBlank()) {
+                        email.error = "Field cannot be empty!"
+                        if (password.text.toString().isBlank()) {
+                            password.error = "Field cannot be empty!"
+                            if (verifyPassword.text.toString().isBlank()) {
+                                verifyPassword.error = "Field cannot be empty!"
+                                if (numberID.text.toString().isBlank()) {
+                                    numberID.error = "Field cannot be empty!"
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } else if (password.text.toString() == verifyPassword.text.toString()){
                 VerifyAuth( this,
                     email.text.toString(),
                     password.text.toString(),
@@ -145,7 +160,7 @@ class SignUpActivity : AppCompatActivity() {
                     numberID.text.toString().toInt()
                 )
             } else {
-                Toast.makeText(this, "Password does not match!", Toast.LENGTH_SHORT).show()
+                verifyPassword.error = "Password does not match!"
             }
 
         }
