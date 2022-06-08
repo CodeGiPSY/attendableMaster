@@ -54,6 +54,15 @@
     <string name="close_string">close</string>
     <string name="xfc38delr_random_string">Xfc38Delr</string>
     <string name="scan_my_code_string">Scan my code</string>
+    <string name="create_new_event_string">Create New Event</string>
+    <string name="event_title_string">Event title:</string>
+    <string name="add_name_of_the_event_string">Add name of the event</string>
+    <string name="due_on_string">Due on:</string>
+    <string name="add_event_description_and_special_notes_string">Add event description and special notes</string>
+    <string name="event_description_string">Event description:</string>
+    <string name="view_all_events_string">View All Events</string>
+    <string name="update_events">Update Events</string>
+    <string name="add_event_string">Add Event</string>
 
 
 </resources>

@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import java.security.Permission
+import java.security.Permissions
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,5 +13,8 @@ class MainActivity : AppCompatActivity() {
         // setContentView(R.layout.activity_main)
         val loginActivityScreen = Intent(this, LoginActivity::class.java)
         startActivity(loginActivityScreen)
+    }
+    private fun isCameraAvailable(): Boolean {
+        return false
     }
 }

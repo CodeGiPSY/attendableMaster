@@ -1,20 +1,24 @@
 package com.extremex.attendable
 
 import android.app.ProgressDialog
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class SignUpActivity : AppCompatActivity() {
 
     // firebase Auth
     private lateinit var firebaseAuth: FirebaseAuth
-    //private lateinit var firebaseDatabase: FirebaseDatabase
-    //private lateinit var databaseReference: DatabaseReference
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,7 +128,7 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fields cannot be empty!", Toast.LENGTH_SHORT).show()
             }
             if (password.text.toString() == verifyPassword.text.toString()){
-                VerifyAuth(
+                VerifyAuth( this,
                     email.text.toString(),
                     password.text.toString(),
                     firstName.text.toString(),
@@ -144,7 +148,7 @@ class SignUpActivity : AppCompatActivity() {
             startActivity(LoginActivityScreen)
         }
     }
-    private fun VerifyAuth(email: String, password: String,
+    private fun VerifyAuth(context: Context ,email: String, password: String,
                            firstName: String, lastName: String ,
                            role: String, course: String, id: Int) {
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -152,26 +156,43 @@ class SignUpActivity : AppCompatActivity() {
         } else if (TextUtils.isEmpty(password)&&TextUtils.isEmpty(firstName)&&TextUtils.isEmpty(lastName)&&TextUtils.isEmpty(id.toString()) ){
             Toast.makeText(this,"Password is Incorrect",Toast.LENGTH_SHORT).show()
         } else {
-            fireBaseLogin(email, password, role)
-            //firebaseDatabase = FirebaseDatabase.getInstance()
-            //databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
 
-           // val userData = DataHelper(firstName,lastName,email,role,course,id)
-           // databaseReference.setValue(firstName)
-           //databaseReference.child(id.toString()).setValue(userData)
-
+            fireBaseLogin(context, firstName, lastName, email, password, role, course, id)
         }
 
 
     }
 
-    private fun fireBaseLogin(email: String, password: String, role: String) {
+    private fun fireBaseLogin(context: Context, firstName: String, lastName: String, email: String, password: String, role: String, course: String, id: Int) {
         firebaseAuth = FirebaseAuth.getInstance()
         val showProgress: ProgressDialog = ProgressDialog(this)
         showProgress.setTitle("Please wait")
         showProgress.setMessage("Signing in...")
         showProgress.setCancelable(false)
         showProgress.show()
+        firebaseDatabase = FirebaseDatabase.getInstance()
+        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.firebaseio.com")
+        val Listener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Check if data already exists in the database
+
+                if (dataSnapshot.hasChild(course[0]+id.toString()) || dataSnapshot.hasChild(email)){
+                    Toast.makeText( context, "User Already Exists", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+
+        databaseReference.child("users").addValueEventListener(Listener)
+        databaseReference.child("users").child(course[0]+id.toString()).child("firstname").setValue(firstName)
+        databaseReference.child("users").child(course[0]+id.toString()).child("lastname").setValue(lastName)
+        databaseReference.child("users").child(course[0]+id.toString()).child("email").setValue(email)
+        databaseReference.child("users").child(course[0]+id.toString()).child("nid").setValue(id)
+        databaseReference.child("users").child(course[0]+id.toString()).child("uid").setValue(course[0]+id.toString())
         firebaseAuth.createUserWithEmailAndPassword(email,password)
             .addOnSuccessListener {
                 showProgress.dismiss()

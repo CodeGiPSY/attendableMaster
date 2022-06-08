@@ -32,16 +32,16 @@ class StudentActivity : AppCompatActivity() {
 
 
         // display User
-        user.text = "User"
+        user.text = FirebaseAuth.getInstance().currentUser!!.email
 
         // event board display
         eventBoard.text = resources.getText(R.string.no_events_string)
 
         mkAttendance.setOnClickListener {
             val uiInflater = LayoutInflater.from(this).inflate(R.layout.mk_attendance,null)
-            val popUpBox = AlertDialog.Builder(this)
-                .setView(uiInflater)
-                .setCancelable(false)
+            val popUpBox = AlertDialog.Builder(this).setView(uiInflater).setCancelable(false)
+            popUpBox.create().window?.setBackgroundDrawableResource(R.color.NoBG)
+            val popupMenu = popUpBox.show()
             val closeButton: Button = uiInflater.findViewById(R.id.CloseButton)
             val  QRCode: ImageView = uiInflater.findViewById(R.id.QRCodeView)
             val conectCode: TextView = uiInflater.findViewById(R.id.ConnectionCode)
@@ -60,10 +60,8 @@ class StudentActivity : AppCompatActivity() {
 
                 }
             }
-
-            popUpBox.show()
             closeButton.setOnClickListener {
-                popUpBox.setCancelable(true)
+                popupMenu.dismiss()
             }
         }
 

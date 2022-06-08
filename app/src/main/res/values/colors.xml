@@ -30,4 +30,5 @@
     <color name="colorError">#EB3829</color>
     <color name="Grey">#59A5A4A4</color>
     <color name="tomato">#FFFF6347</color>
+    <color name="NoBG">#00000000</color>
 </resources>

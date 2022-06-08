@@ -70,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
                 val firebaseUser = fireBaseAuth.currentUser
                 val userEmail = firebaseUser!!.email
                 Toast.makeText(this,"Logged in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, StudentActivity::class.java))
+                startActivity(Intent(this, TeachersActivity::class.java))
             }
             .addOnFailureListener {
                 progress.dismiss()
@@ -85,7 +85,7 @@ class LoginActivity : AppCompatActivity() {
         val firebaseUser = fireBaseAuth.currentUser
         if (firebaseUser != null) {
             val ac = Intent(this, LoginActivity::class.java)
-            when(intent.getStringExtra("ROLE")){
+            when(roleName[0]){   //intent.getStringExtra("ROLE")
                 roleName[0] -> {
                     startActivity(Intent(this, TeachersActivity::class.java))
                     finish()
