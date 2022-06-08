@@ -11,9 +11,8 @@
 
     <string-array name="department">
         <item>BCA</item>
-        <item>CSE</item>
+        <item>BCOM</item>
         <item>ARTS</item>
-        <item>Economic</item>
 
     </string-array>
     <string-array name="year">

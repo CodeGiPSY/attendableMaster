@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.extremex.kotex_libs.databaseVars
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -43,7 +44,7 @@ class SignUpActivity : AppCompatActivity() {
         val numberID :EditText = this.findViewById(R.id.IDNumber)
         val signUpButton :Button = this.findViewById(R.id.SignUpButton)
 
-        var courseCodes = resources.getStringArray(R.array.course_code)
+        var courseCodes = resources.getStringArray(R.array.department)
         val roleName = arrayListOf("teacher","student","admin")
 
         var rolePointer = 2
@@ -170,8 +171,8 @@ class SignUpActivity : AppCompatActivity() {
         showProgress.setMessage("Signing in...")
         showProgress.setCancelable(false)
         showProgress.show()
-        firebaseDatabase = FirebaseDatabase.getInstance()
-        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.firebaseio.com")
+        firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
         val Listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Check if data already exists in the database
@@ -192,6 +193,8 @@ class SignUpActivity : AppCompatActivity() {
         databaseReference.child("users").child(course[0]+id.toString()).child("lastname").setValue(lastName)
         databaseReference.child("users").child(course[0]+id.toString()).child("email").setValue(email)
         databaseReference.child("users").child(course[0]+id.toString()).child("nid").setValue(id)
+        databaseReference.child("users").child(course[0]+id.toString()).child("course").setValue(course)
+        databaseReference.child("users").child(course[0]+id.toString()).child("role").setValue(role)
         databaseReference.child("users").child(course[0]+id.toString()).child("uid").setValue(course[0]+id.toString())
         firebaseAuth.createUserWithEmailAndPassword(email,password)
             .addOnSuccessListener {
