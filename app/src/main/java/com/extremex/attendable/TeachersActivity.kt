@@ -1,27 +1,36 @@
 package com.extremex.attendable
 
+import android.Manifest
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.extremex.kotex_libs.EventListAdapter
 import com.extremex.kotex_libs.EventViewHandler
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TeachersActivity : AppCompatActivity() {
 
+    //
     private lateinit var fireBaseAuth: FirebaseAuth
-    private var count = 0
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var databaseReference: DatabaseReference
+    //
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +39,35 @@ class TeachersActivity : AppCompatActivity() {
 
         val signOutButton = findViewById<Button>(R.id.signoutBtn)
         val loginScreen = Intent(this, LoginActivity::class.java)
+        val user: TextView = this.findViewById(R.id.User)
 
         fireBaseAuth = FirebaseAuth.getInstance()
 
+        val markAttendance : Button = this.findViewById(R.id.CheckIn)
         val updateEvent: Button = this.findViewById(R.id.UpdateEvent)
 
+        markAttendance.setOnClickListener {
+            if (isCameraAvailable()){
+                //mark attendance view
+            } else {
+                requestPermission()
+            }
+        }
+
+
+        fireBaseAuth = FirebaseAuth.getInstance()
+        firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        val ud = fireBaseAuth.currentUser?.email?.split("@")
+        val uid = ud?.get(0)
+        databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener{
+            if (it.exists()){
+                user.text = "${it.child("firstname").value} ${it.child("lastname").value}"
+            } else {
+                user.text = "user"
+            }
+        }
 
 
         updateEvent.setOnClickListener {
@@ -160,6 +193,16 @@ class TeachersActivity : AppCompatActivity() {
     private fun formatedDate(calender: Calendar): String {
         val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return date.format(calender.time)
+    }
+
+    private fun isCameraAvailable(): Boolean {
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED)
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA),
+            1001)
     }
 }
 

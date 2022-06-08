@@ -11,6 +11,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
@@ -18,6 +20,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 class StudentActivity : AppCompatActivity() {
 
     private lateinit var fireBaseAuth: FirebaseAuth
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var databaseReference: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +34,19 @@ class StudentActivity : AppCompatActivity() {
         val eventBoard: TextView = this@StudentActivity.findViewById(R.id.EventBoard)
         val loginScreen =  Intent(this,LoginActivity::class.java)
 
+        fireBaseAuth = FirebaseAuth.getInstance()
+        firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
 
-        // display User
-        user.text = FirebaseAuth.getInstance().currentUser!!.email
-
+        val ud = fireBaseAuth.currentUser?.email?.split("@")
+        val uid = ud?.get(0)
+        databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener{
+            if (it.exists()){
+                user.text = "${it.child("firstname").value} ${it.child("lastname").value}"
+            } else {
+                user.text = "user"
+            }
+        }
         // event board display
         eventBoard.text = resources.getText(R.string.no_events_string)
 
@@ -46,13 +59,22 @@ class StudentActivity : AppCompatActivity() {
             val  QRCode: ImageView = uiInflater.findViewById(R.id.QRCodeView)
             val conectCode: TextView = uiInflater.findViewById(R.id.ConnectionCode)
             val qrBuilder = QRCodeWriter()
+
+            databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener{
+                if (it.exists()){
+                    conectCode.text = "User Id: ${it.child("uid").value}"
+                } else {
+                    conectCode.text = "Could not Connect to the Server"
+                }
+            }
+
             if (!conectCode.text.toString().isNullOrBlank()){
                 try {
                     val qrCode = qrBuilder.encode(conectCode.text.toString(), BarcodeFormat.QR_CODE,512,512)
                     val bitmpConfig = Bitmap.createBitmap(qrCode.width,qrCode.height,Bitmap.Config.RGB_565)
                     for(x in 0 until qrCode.width){
                         for(y in 0 until qrCode.height){
-                            bitmpConfig.setPixel(x,y,if (qrCode[x,y]) Color.BLACK else Color.WHITE)
+                            bitmpConfig.setPixel(x,y,if (qrCode[x,y]) Color.BLACK else Color.LTGRAY)
                         }
                     }
                     QRCode.setImageBitmap(bitmpConfig)

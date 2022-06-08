@@ -11,14 +11,18 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import android.widget.Button as Button
 
 class LoginActivity : AppCompatActivity() {
 
     // fireBase Auth
     private lateinit var fireBaseAuth: FirebaseAuth
+    private lateinit var firebaseDatabase: FirebaseDatabase
+    private lateinit var databaseReference: DatabaseReference
     //
-    private val roleName = arrayListOf("teacher","student","admin")
+    private val roleName = arrayListOf("teacher","Student","Admin050")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +31,6 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById<Button>(R.id.loginBtn)
         val signUp = findViewById<Button>(R.id.signinBtn)
 
-        val AdminActivityScreen = Intent(this, AdminActivity::class.java)
         val SignUpActivityScreen = Intent(this, SignUpActivity::class.java)
 
         val userName: EditText = this@LoginActivity.findViewById(R.id.username)
@@ -68,9 +71,32 @@ class LoginActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 progress.dismiss()
                 val firebaseUser = fireBaseAuth.currentUser
-                val userEmail = firebaseUser!!.email
-                Toast.makeText(this,"Logged in Successfully as $userEmail",Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, TeachersActivity::class.java))
+                firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+                databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+
+                val ud = firebaseUser?.email?.split("@")
+                val uid = ud?.get(0)
+                databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener {
+                    if (it.exists()){
+                        val key = it.child("role").value
+
+                        Toast.makeText(this,"Logged in as ${it.child("firstname").value} ${it.child("lastname").value}",Toast.LENGTH_SHORT).show()
+
+                        if (key == roleName[0]){
+                            startActivity(Intent(this, TeachersActivity::class.java))
+                        }else if (key == roleName[1]){
+                            startActivity(Intent(this, StudentActivity::class.java))
+                        }else if (key == roleName[2]){
+                            startActivity(Intent(this, AdminActivity::class.java))
+                        } else {
+                            startActivity(Intent(this, LoginActivity::class.java))
+                        }
+                    }else{
+                        Toast.makeText(this,"User does not exist",Toast.LENGTH_SHORT).show()
+                    }
+                } .addOnFailureListener {
+                    Toast.makeText(this,"please check your connection",Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener {
                 progress.dismiss()
@@ -84,24 +110,33 @@ class LoginActivity : AppCompatActivity() {
         fireBaseAuth = FirebaseAuth.getInstance()
         val firebaseUser = fireBaseAuth.currentUser
         if (firebaseUser != null) {
-            val ac = Intent(this, LoginActivity::class.java)
-            when(roleName[0]){   //intent.getStringExtra("ROLE")
-                roleName[0] -> {
-                    startActivity(Intent(this, TeachersActivity::class.java))
-                    finish()
+            firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+            databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+
+            val ud = firebaseUser.email?.split("@")
+            val uid = ud?.get(0)
+            databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener {
+                if (it.exists()){
+                    val key = it.child("role").value
+
+                    Toast.makeText(this,"Logged in as ${it.child("firstname").value} ${it.child("lastname").value}",Toast.LENGTH_SHORT).show()
+
+
+                    if (key == roleName[0]){
+                        startActivity(Intent(this, TeachersActivity::class.java))
+                    }else if (key == roleName[1]){
+                        startActivity(Intent(this, StudentActivity::class.java))
+                    }else if (key == roleName[2]){
+                        startActivity(Intent(this, AdminActivity::class.java))
+                    } else {
+                        startActivity(Intent(this, LoginActivity::class.java))
+                    }
+                }else{
+                    // will re direct to login on it's own, don't add anything here.
+                    // just a place holder
                 }
-                roleName[1] -> {
-                    startActivity(Intent(this, StudentActivity::class.java))
-                    finish()
-                }
-                roleName[2] -> {
-                    startActivity(Intent(this, AdminActivity::class.java))
-                    finish()
-                }
-                "" -> {
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
-                }
+            } .addOnFailureListener {
+                // task fo failure
             }
         }
         super.onStart()

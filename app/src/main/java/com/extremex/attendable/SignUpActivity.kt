@@ -45,46 +45,52 @@ class SignUpActivity : AppCompatActivity() {
         val signUpButton :Button = this.findViewById(R.id.SignUpButton)
 
         var courseCodes = resources.getStringArray(R.array.department)
-        val roleName = arrayListOf("teacher","student","admin")
+        val roleName = arrayListOf("teacher","student")
 
-        var rolePointer = 2
+        var rolePointer = 1
+        nextRole.alpha = 0.3f
+        nextRole.isClickable = false
         var coursePointer = 1
 
         course.text = courseCodes[coursePointer]
 
         privRole.setOnClickListener {
-            rolePointer -= 1
-            if (rolePointer == 0) {
-                rolePointer = 0
-                privRole.alpha = 0.3f
-                privRole.isClickable = false
-                rolePointer = 0
-                role.text = roleName[rolePointer]
-                nextRole.isClickable = true
-                nextRole.alpha = 1.0f
+            if (privRole.isClickable){
+                rolePointer -= 1
+                if (rolePointer == 0) {
+                    rolePointer = 0
+                    privRole.alpha = 0.3f
+                    privRole.isClickable = false
+                    rolePointer = 0
+                    role.text = roleName[rolePointer]
+                    nextRole.isClickable = true
+                    nextRole.alpha = 1.0f
 
-            } else {
-                privRole.alpha = 1.0f
-                privRole.isClickable = true
-                role.text = roleName[rolePointer]
+                } else {
+                    privRole.alpha = 1.0f
+                    privRole.isClickable = true
+                    role.text = roleName[rolePointer]
+                }
             }
 
         }
 
         nextRole.setOnClickListener {
-            rolePointer += 1
-            if (rolePointer == roleName.size) {
-                rolePointer = roleName.size -1
-                nextRole.alpha = 0.3f
-                nextRole.isClickable = false
-                role.text = roleName[rolePointer]
-                privRole.alpha = 1.0f
-                privRole.isClickable = true
+            if (nextRole.isClickable){
+                rolePointer += 1
+                if (rolePointer == roleName.size -1) {
+                    rolePointer = roleName.size -1
+                    nextRole.alpha = 0.3f
+                    nextRole.isClickable = false
+                    role.text = roleName[rolePointer]
+                    privRole.alpha = 1.0f
+                    privRole.isClickable = true
 
-            } else {
-                nextRole.alpha = 1.0f
-                nextRole.isClickable = true
-                role.text = roleName[rolePointer]
+                } else {
+                    nextRole.alpha = 1.0f
+                    nextRole.isClickable = true
+                    role.text = roleName[rolePointer]
+                }
             }
 
         }
@@ -158,7 +164,13 @@ class SignUpActivity : AppCompatActivity() {
             Toast.makeText(this,"Password is Incorrect",Toast.LENGTH_SHORT).show()
         } else {
 
-            fireBaseLogin(context, firstName, lastName, email, password, role, course, id)
+
+            if (userExists(email)){
+
+                Toast.makeText(this,"User already exists",Toast.LENGTH_SHORT).show()
+            }else {
+                fireBaseLogin(context, firstName, lastName, email, password, role, course, id)
+            }
         }
 
 
@@ -187,15 +199,23 @@ class SignUpActivity : AppCompatActivity() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
+        val ud = email.split("@")
+        val uid =ud[0]
 
         databaseReference.child("users").addValueEventListener(Listener)
-        databaseReference.child("users").child(course[0]+id.toString()).child("firstname").setValue(firstName)
-        databaseReference.child("users").child(course[0]+id.toString()).child("lastname").setValue(lastName)
-        databaseReference.child("users").child(course[0]+id.toString()).child("email").setValue(email)
-        databaseReference.child("users").child(course[0]+id.toString()).child("nid").setValue(id)
-        databaseReference.child("users").child(course[0]+id.toString()).child("course").setValue(course)
-        databaseReference.child("users").child(course[0]+id.toString()).child("role").setValue(role)
-        databaseReference.child("users").child(course[0]+id.toString()).child("uid").setValue(course[0]+id.toString())
+        databaseReference.child("users").child(uid).child("firstname").setValue(firstName)
+        databaseReference.child("users").child(uid).child("lastname").setValue(lastName)
+        databaseReference.child("users").child(uid).child("email").setValue(email)
+        databaseReference.child("users").child(uid).child("nid").setValue(id)
+        databaseReference.child("users").child(uid).child("course").setValue(course)
+        databaseReference.child("users").child(uid).child("role").setValue(role)
+        if (role.lowercase() == "student") {
+            databaseReference.child("users").child(uid).child("uid")
+                .setValue(course[0] + id.toString())
+        } else {
+            databaseReference.child("users").child(uid).child("uid")
+                .setValue(role[0].uppercase() + id.toString())
+        }
         firebaseAuth.createUserWithEmailAndPassword(email,password)
             .addOnSuccessListener {
                 showProgress.dismiss()
@@ -216,5 +236,29 @@ class SignUpActivity : AppCompatActivity() {
     override fun onBackPressed() {
         finish()
         startActivity(Intent(this, LoginActivity::class.java))
+    }
+    private fun userExists(email: String): Boolean{
+        firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseUser = firebaseAuth.currentUser
+        firebaseDatabase = FirebaseDatabase.getInstance("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+        databaseReference = firebaseDatabase.getReferenceFromUrl("https://signup-attendable-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        val ud = email.split("@")
+        val uid = ud[0]
+        var flag: Boolean = true
+        databaseReference.child("users").child(uid.toString()).get().addOnSuccessListener {
+            flag = if (it.exists()){
+                val key = it.key
+                key == uid
+
+            }else{
+                false
+            }
+        } .addOnFailureListener {
+            // task fo failure
+            flag = true
+        }
+
+        return flag
     }
 }
