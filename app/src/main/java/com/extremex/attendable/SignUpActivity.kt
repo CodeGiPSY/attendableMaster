@@ -226,7 +226,7 @@ class SignUpActivity : AppCompatActivity() {
         databaseReference.child("users").child(uid).child("role").setValue(role)
         if (role.lowercase() == "student") {
             databaseReference.child("users").child(uid).child("uid")
-                .setValue(course[0] + id.toString())
+                .setValue(course+id.toString())
         } else {
             databaseReference.child("users").child(uid).child("uid")
                 .setValue(role[0].uppercase() + id.toString())
